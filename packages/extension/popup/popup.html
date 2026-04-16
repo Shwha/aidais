@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 300px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 16px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .logo .ai { color: #3B82F6; }
+    .badge {
+      font-size: 10px;
+      background: #1e293b;
+      padding: 2px 8px;
+      border-radius: 12px;
+      color: #94a3b8;
+    }
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding: 10px;
+      background: #1e293b;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .dot.connected { background: #22c55e; }
+    .dot.disconnected { background: #ef4444; }
+    .dot.capturing { background: #22c55e; animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-start {
+      background: #3B82F6;
+      color: white;
+    }
+    .btn-start:hover { background: #2563eb; }
+    .btn-start:disabled {
+      background: #334155;
+      color: #64748b;
+      cursor: not-allowed;
+    }
+    .btn-stop {
+      background: #ef4444;
+      color: white;
+    }
+    .btn-stop:hover { background: #dc2626; }
+    .note {
+      margin-top: 12px;
+      font-size: 11px;
+      color: #64748b;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="logo"><span class="ai">AI</span>DAIS</span>
+    <span class="badge">v0.1.0</span>
+  </div>
+
+  <div class="status" id="status">
+    <div class="dot disconnected" id="status-dot"></div>
+    <span id="status-text">Checking...</span>
+  </div>
+
+  <button id="action-btn" class="btn-start" disabled>Start</button>
+
+  <p class="note">
+    Navigate to a YouTube video, then click Start to begin AI commentary.
+  </p>
+
+  <script src="popup.js"></script>
+</body>
+</html>

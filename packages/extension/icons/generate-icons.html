@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head><title>Generate AIDAIS Icons</title></head>
+<body>
+<p>Open console and run the script, then right-click each canvas to save as PNG.</p>
+<script>
+// Generate simple AIDAIS extension icons
+[16, 48, 128].forEach(size => {
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+
+  // Background circle
+  ctx.fillStyle = '#3B82F6';
+  ctx.beginPath();
+  ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Text
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = `bold ${size * 0.4}px system-ui`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('AI', size/2, size/2);
+
+  document.body.appendChild(canvas);
+
+  // Also create a download link
+  const link = document.createElement('a');
+  link.download = `icon${size}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.textContent = `Download icon${size}.png`;
+  link.style.display = 'block';
+  document.body.appendChild(link);
+});
+</script>
+</body>
+</html>
