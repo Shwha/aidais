@@ -3,11 +3,12 @@ import { useSessionStore } from "../stores/session.store";
 
 export function TranscriptFeed() {
   const entries = useSessionStore((s) => s.transcriptEntries);
+  const interimText = useSessionStore((s) => s.interimText);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [entries]);
+  }, [entries, interimText]);
 
   return (
     <div className="flex-1 overflow-y-auto rounded-xl border border-gray-800 bg-gray-900/50 p-4">
@@ -15,7 +16,7 @@ export function TranscriptFeed() {
         Live Transcript
       </h3>
       <div className="space-y-1">
-        {entries.length === 0 && (
+        {entries.length === 0 && !interimText && (
           <p className="py-8 text-center text-sm text-gray-500">
             Start a session and speak to see the live transcript here.
           </p>
@@ -23,13 +24,16 @@ export function TranscriptFeed() {
         {entries.map((entry, i) => (
           <span
             key={`${entry.timestamp}-${i}`}
-            className={`inline ${
-              entry.isFinal ? "text-gray-200" : "text-gray-500 italic"
-            }`}
+            className="inline text-gray-200"
           >
             {entry.text}{" "}
           </span>
         ))}
+        {interimText && (
+          <span className="streaming-cursor inline text-gray-500 italic">
+            {interimText}
+          </span>
+        )}
         <div ref={bottomRef} />
       </div>
     </div>

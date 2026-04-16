@@ -16,7 +16,9 @@ interface SessionStore {
 
   // Transcript
   transcriptEntries: TranscriptEntry[];
+  interimText: string;
   addTranscript: (entry: TranscriptEntry) => void;
+  setInterimText: (text: string) => void;
   clearTranscript: () => void;
 
   // Agent messages
@@ -47,11 +49,14 @@ export const useSessionStore = create<SessionStore>((set) => ({
   setSessionActive: (active) => set({ isSessionActive: active }),
 
   transcriptEntries: [],
+  interimText: "",
   addTranscript: (entry) =>
     set((state) => ({
       transcriptEntries: [...state.transcriptEntries.slice(-100), entry],
+      interimText: "",
     })),
-  clearTranscript: () => set({ transcriptEntries: [] }),
+  setInterimText: (text) => set({ interimText: text }),
+  clearTranscript: () => set({ transcriptEntries: [], interimText: "" }),
 
   agentMessages: { ...emptyAgentMessages },
   streamingMessages: { ...emptyStreaming },

@@ -24,6 +24,7 @@ interface ServerMsg {
 
 export function App() {
   const addTranscript = useSessionStore((s) => s.addTranscript);
+  const setInterimText = useSessionStore((s) => s.setInterimText);
   const addAgentChunk = useSessionStore((s) => s.addAgentChunk);
   const setSessionActive = useSessionStore((s) => s.setSessionActive);
 
@@ -33,14 +34,6 @@ export function App() {
       switch (msg.type) {
         case "session_status":
           setSessionActive(msg.status === "active");
-          break;
-
-        case "transcript":
-          addTranscript({
-            text: msg.text ?? "",
-            isFinal: msg.isFinal ?? false,
-            timestamp: msg.timestamp ?? Date.now(),
-          });
           break;
 
         case "agent_response":
@@ -61,21 +54,32 @@ export function App() {
           break;
       }
     },
-    [addTranscript, addAgentChunk, setSessionActive]
+    [addAgentChunk, setSessionActive]
   );
 
   const { send } = useWebSocket(handleServerMessage);
 
   const onTranscript = useCallback(
     (text: string, isFinal: boolean) => {
-      send({
-        type: "transcript",
-        text,
-        isFinal,
-        timestamp: Date.now(),
-      });
+      if (isFinal) {
+        // Only send final results to server (for agent processing)
+        addTranscript({
+          text,
+          isFinal: true,
+          timestamp: Date.now(),
+        });
+        send({
+          type: "transcript",
+          text,
+          isFinal: true,
+          timestamp: Date.now(),
+        });
+      } else {
+        // Interim results — display locally only, replace previous interim
+        setInterimText(text);
+      }
     },
-    [send]
+    [send, addTranscript, setInterimText]
   );
 
   const { isListening, start: startCapture, stop: stopCapture, error } =

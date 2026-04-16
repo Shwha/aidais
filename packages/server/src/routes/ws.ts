@@ -93,23 +93,16 @@ export function registerWebSocket(
               case "transcript":
                 if (!session.isActive) return;
 
-                session.transcriptBuffer += " " + msg.text;
+                // Only buffer final results to avoid duplication
+                if (msg.isFinal) {
+                  session.transcriptBuffer += " " + msg.text;
 
-                // Trim to context window
-                if (session.transcriptBuffer.length > 3000) {
-                  session.transcriptBuffer =
-                    session.transcriptBuffer.slice(-3000);
+                  // Trim to context window
+                  if (session.transcriptBuffer.length > 3000) {
+                    session.transcriptBuffer =
+                      session.transcriptBuffer.slice(-3000);
+                  }
                 }
-
-                // Forward transcript to client (echo for UI display)
-                ws.send(
-                  JSON.stringify({
-                    type: "transcript",
-                    text: msg.text,
-                    isFinal: msg.isFinal,
-                    timestamp: msg.timestamp,
-                  })
-                );
 
                 // Debounce agent invocations
                 if (msg.isFinal) {
