@@ -1,0 +1,68 @@
+import { Hono } from "hono";
+import { serve } from "@hono/node-server";
+import { createNodeWebSocket } from "@hono/node-ws";
+import { loadConfig } from "./config.js";
+import {
+  corsMiddleware,
+  securityHeaders,
+  rateLimiter,
+} from "./middleware/security.js";
+import { requestLogger, logger } from "./middleware/logger.js";
+import { health } from "./routes/health.js";
+import { registerWebSocket } from "./routes/ws.js";
+import { createProvider } from "./services/providers/registry.js";
+import { AgentService } from "./services/agent.service.js";
+
+// --- Load and validate configuration ---
+const config = loadConfig();
+
+// --- Initialize LLM provider ---
+const provider = createProvider(config);
+const agentService = new AgentService(provider, config.llmModel);
+
+// --- Create Hono app ---
+const app = new Hono();
+const { injectWebSocket, upgradeWebSocket } = createNodeWebSocket({ app });
+
+// --- Middleware ---
+app.use("*", requestLogger());
+app.use("*", corsMiddleware(config.corsOrigin));
+app.use("*", securityHeaders());
+app.use("/api/*", rateLimiter());
+
+// --- Routes ---
+app.route("/", health);
+registerWebSocket(app, upgradeWebSocket, config, agentService);
+
+// --- Start server ---
+const server = serve(
+  { fetch: app.fetch, port: config.port },
+  (info) => {
+    logger.info("server_started", {
+      port: info.port,
+      env: config.nodeEnv,
+      llm_provider: config.llmProvider,
+      llm_model: config.llmModel,
+      stt_provider: config.sttProvider,
+    });
+    console.log(`\n  AIDAIS server running at http://localhost:${info.port}`);
+    console.log(`  LLM: ${provider.name} (${config.llmModel})`);
+    console.log(`  STT: ${config.sttProvider}\n`);
+  }
+);
+
+injectWebSocket(server);
+
+// --- Graceful shutdown ---
+function shutdown(signal: string) {
+  logger.info("server_shutting_down", { signal });
+  server.close(() => {
+    logger.info("server_stopped");
+    process.exit(0);
+  });
+  // Force exit after 10s
+  setTimeout(() => process.exit(1), 10_000).unref();
+}
+
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));

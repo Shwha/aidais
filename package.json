@@ -1,0 +1,28 @@
+{
+  "name": "aidais",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Real-time AI podcast companion \u2014 multi-agent sidebar with live commentary",
+  "scripts": {
+    "dev": "pnpm --parallel -r dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@10.8.1",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shwha/aidais.git"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}
