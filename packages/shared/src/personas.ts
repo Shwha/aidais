@@ -5,7 +5,7 @@ export const PERSONAS: readonly Persona[] = [
     id: "fact-checker",
     name: "Baba Booey",
     displayName: "Fact Checker",
-    avatar: "/personas/fact-checker.png",
+    avatar: "/personas/fact-checker.svg",
     color: "#3B82F6", // blue
     temperature: 0.3,
     maxTokens: 150,
@@ -27,7 +27,7 @@ Rules:
     id: "cynical-troll",
     name: "The Troll",
     displayName: "Cynical Troll",
-    avatar: "/personas/cynical-troll.png",
+    avatar: "/personas/cynical-troll.svg",
     color: "#EF4444", // red
     temperature: 0.8,
     maxTokens: 150,
@@ -49,7 +49,7 @@ Rules:
     id: "chaos-agent",
     name: "Chaos",
     displayName: "Chaos Agent",
-    avatar: "/personas/chaos-agent.png",
+    avatar: "/personas/chaos-agent.svg",
     color: "#A855F7", // purple
     temperature: 1.0,
     maxTokens: 150,
@@ -72,7 +72,7 @@ Rules:
     id: "joke-writer",
     name: "Jackie",
     displayName: "Joke Writer",
-    avatar: "/personas/joke-writer.png",
+    avatar: "/personas/joke-writer.svg",
     color: "#F59E0B", // amber
     temperature: 0.9,
     maxTokens: 150,

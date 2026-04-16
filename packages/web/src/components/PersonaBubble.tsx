@@ -32,12 +32,11 @@ export function PersonaBubble({ personaId }: PersonaBubbleProps) {
     >
       {/* Header */}
       <div className="mb-3 flex items-center gap-3">
-        <div
-          className="flex h-10 w-10 items-center justify-center rounded-full text-lg font-bold text-white"
-          style={{ backgroundColor: persona.color }}
-        >
-          {persona.name[0]}
-        </div>
+        <img
+          src={persona.avatar}
+          alt={persona.name}
+          className="h-10 w-10 rounded-full"
+        />
         <div className="flex-1">
           <div className="text-sm font-semibold text-white">
             {persona.name}
