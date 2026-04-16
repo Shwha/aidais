@@ -38,11 +38,17 @@ const audioChunkSchema = z.object({
   data: z.string().max(AUDIO_CHUNK_MAX_SIZE),
 });
 
+const setChaosModeSchema = z.object({
+  type: z.literal("set_chaos_mode"),
+  mode: z.enum(["chaos", "fred-norris"]),
+});
+
 export const clientMessageSchema = z.discriminatedUnion("type", [
   startSessionSchema,
   stopSessionSchema,
   transcriptSchema,
   audioChunkSchema,
+  setChaosModeSchema,
 ]);
 
 // --- Server → Client messages ---

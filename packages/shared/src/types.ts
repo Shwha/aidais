@@ -20,6 +20,8 @@ export type PersonaId =
   | "chaos-agent"
   | "joke-writer";
 
+export type ChaosAgentMode = "chaos" | "fred-norris";
+
 export interface Persona {
   id: PersonaId;
   name: string;
@@ -29,6 +31,11 @@ export interface Persona {
   systemPrompt: string;
   temperature: number;
   maxTokens: number;
+}
+
+/** Alternate persona definition for the chaos-agent slot when in sound-effects mode */
+export interface PersonaAlt extends Persona {
+  altMode: ChaosAgentMode;
 }
 
 export interface SessionConfig {
@@ -44,7 +51,8 @@ export type ClientMessage =
   | { type: "start_session"; config?: Partial<SessionConfig> }
   | { type: "stop_session" }
   | { type: "transcript"; text: string; isFinal: boolean; timestamp: number }
-  | { type: "audio_chunk"; data: string }; // base64-encoded PCM
+  | { type: "audio_chunk"; data: string } // base64-encoded PCM
+  | { type: "set_chaos_mode"; mode: ChaosAgentMode };
 
 export type ServerMessage =
   | { type: "session_status"; status: "active" | "stopped" | "error"; message?: string }

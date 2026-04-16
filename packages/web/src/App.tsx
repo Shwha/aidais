@@ -1,10 +1,11 @@
 import { useCallback } from "react";
-import type { PersonaId } from "@aidais/shared";
+import type { PersonaId, ChaosAgentMode } from "@aidais/shared";
 import { useSessionStore } from "./stores/session.store";
 import { useWebSocket } from "./hooks/useWebSocket";
 import { useAudioCapture } from "./hooks/useAudioCapture";
 import { Layout } from "./components/Layout";
 import { Sidebar } from "./components/Sidebar";
+import { PodcastPlayer } from "./components/PodcastPlayer";
 import { TranscriptFeed } from "./components/TranscriptFeed";
 import { Controls } from "./components/Controls";
 
@@ -27,6 +28,8 @@ export function App() {
   const setInterimText = useSessionStore((s) => s.setInterimText);
   const addAgentChunk = useSessionStore((s) => s.addAgentChunk);
   const setSessionActive = useSessionStore((s) => s.setSessionActive);
+  const chaosMode = useSessionStore((s) => s.chaosMode);
+  const setChaosMode = useSessionStore((s) => s.setChaosMode);
 
   const handleServerMessage = useCallback(
     (data: unknown) => {
@@ -95,6 +98,12 @@ export function App() {
     send({ type: "stop_session" });
   }, [send, stopCapture]);
 
+  const handleToggleChaosMode = useCallback(() => {
+    const newMode: ChaosAgentMode = chaosMode === "chaos" ? "fred-norris" : "chaos";
+    setChaosMode(newMode);
+    send({ type: "set_chaos_mode", mode: newMode });
+  }, [chaosMode, setChaosMode, send]);
+
   return (
     <Layout
       main={
@@ -105,10 +114,11 @@ export function App() {
             onStop={handleStop}
             error={error}
           />
+          <PodcastPlayer />
           <TranscriptFeed />
         </>
       }
-      sidebar={<Sidebar />}
+      sidebar={<Sidebar onToggleChaosMode={handleToggleChaosMode} />}
     />
   );
 }

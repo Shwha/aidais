@@ -2,7 +2,7 @@
 export const TRANSCRIPT_CONTEXT_MAX_CHARS = 3000;
 
 /** Minimum interval between agent invocations (ms) */
-export const AGENT_DEBOUNCE_MS = 3000;
+export const AGENT_DEBOUNCE_MS = 10000;
 
 /** Maximum tokens per agent response */
 export const AGENT_MAX_TOKENS = 150;
@@ -20,7 +20,7 @@ export const WS_MAX_MESSAGE_SIZE = 1_048_576; // 1MB
 export const AUDIO_CHUNK_MAX_SIZE = 1_048_576; // 1MB
 
 /** Server default port */
-export const DEFAULT_PORT = 3001;
+export const DEFAULT_PORT = 3002;
 
 /** Client dev server default port */
 export const DEFAULT_CLIENT_PORT = 5173;

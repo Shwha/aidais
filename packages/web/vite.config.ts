@@ -10,11 +10,14 @@ export default defineConfig({
     https: true,
     proxy: {
       "/ws": {
-        target: "ws://localhost:3001",
+        target: "http://localhost:3002",
         ws: true,
+        changeOrigin: true,
+        secure: false,
       },
       "/health": {
-        target: "http://localhost:3001",
+        target: "http://localhost:3002",
+        changeOrigin: true,
       },
     },
   },

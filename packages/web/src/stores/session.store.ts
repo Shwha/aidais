@@ -1,5 +1,7 @@
 import { create } from "zustand";
-import type { PersonaId, AgentMessage } from "@aidais/shared";
+import type { PersonaId, AgentMessage, ChaosAgentMode } from "@aidais/shared";
+
+export type StreamView = "enhanced" | "regular";
 
 interface TranscriptEntry {
   text: string;
@@ -14,12 +16,20 @@ interface SessionStore {
   setConnected: (connected: boolean) => void;
   setSessionActive: (active: boolean) => void;
 
+  // Stream view mode
+  streamView: StreamView;
+  setStreamView: (view: StreamView) => void;
+
   // Transcript
   transcriptEntries: TranscriptEntry[];
   interimText: string;
   addTranscript: (entry: TranscriptEntry) => void;
   setInterimText: (text: string) => void;
   clearTranscript: () => void;
+
+  // Chaos agent mode
+  chaosMode: ChaosAgentMode;
+  setChaosMode: (mode: ChaosAgentMode) => void;
 
   // Agent messages
   agentMessages: Record<PersonaId, AgentMessage[]>;
@@ -48,6 +58,9 @@ export const useSessionStore = create<SessionStore>((set) => ({
   setConnected: (connected) => set({ isConnected: connected }),
   setSessionActive: (active) => set({ isSessionActive: active }),
 
+  streamView: "enhanced" as StreamView,
+  setStreamView: (view) => set({ streamView: view }),
+
   transcriptEntries: [],
   interimText: "",
   addTranscript: (entry) =>
@@ -57,6 +70,9 @@ export const useSessionStore = create<SessionStore>((set) => ({
     })),
   setInterimText: (text) => set({ interimText: text }),
   clearTranscript: () => set({ transcriptEntries: [], interimText: "" }),
+
+  chaosMode: "chaos" as ChaosAgentMode,
+  setChaosMode: (mode) => set({ chaosMode: mode }),
 
   agentMessages: { ...emptyAgentMessages },
   streamingMessages: { ...emptyStreaming },

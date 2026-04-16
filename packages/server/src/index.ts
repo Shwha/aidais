@@ -18,6 +18,7 @@ import { health } from "./routes/health.js";
 import { registerWebSocket } from "./routes/ws.js";
 import { createProvider } from "./services/providers/registry.js";
 import { AgentService } from "./services/agent.service.js";
+import { TranscriptionService } from "./services/transcription.service.js";
 
 // --- Load and validate configuration ---
 const config = loadConfig();
@@ -25,6 +26,20 @@ const config = loadConfig();
 // --- Initialize LLM provider ---
 const provider = createProvider(config);
 const agentService = new AgentService(provider, config.llmModel);
+
+// --- Initialize transcription (optional — requires WHISPER_API_KEY) ---
+let transcriptionService: TranscriptionService | null = null;
+if (config.whisperApiKey) {
+  transcriptionService = new TranscriptionService(
+    config.whisperApiKey,
+    config.whisperApiUrl,
+    config.whisperModel
+  );
+} else {
+  logger.info("transcription_disabled", {
+    reason: "WHISPER_API_KEY not set — audio chunks will not be transcribed",
+  });
+}
 
 // --- Create Hono app ---
 const app = new Hono();
@@ -38,7 +53,7 @@ app.use("/api/*", rateLimiter());
 
 // --- Routes ---
 app.route("/", health);
-registerWebSocket(app, upgradeWebSocket, config, agentService);
+registerWebSocket(app, upgradeWebSocket, config, agentService, transcriptionService);
 
 // --- Start server ---
 const server = serve(
@@ -53,7 +68,7 @@ const server = serve(
     });
     console.log(`\n  AIDAIS server running at http://localhost:${info.port}`);
     console.log(`  LLM: ${provider.name} (${config.llmModel})`);
-    console.log(`  STT: ${config.sttProvider}\n`);
+    console.log(`  STT: ${transcriptionService ? "Whisper (" + (config.whisperModel ?? "whisper-large-v3") + ")" : "webspeech (mic only)"}\n`);
   }
 );
 

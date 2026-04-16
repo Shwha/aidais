@@ -11,6 +11,9 @@ export interface AppConfig {
   anthropicApiKey?: string;
   openaiApiKey?: string;
   deepgramApiKey?: string;
+  whisperApiKey?: string;
+  whisperApiUrl?: string;
+  whisperModel?: string;
 }
 
 function requireEnvForProvider(provider: string): void {
@@ -58,6 +61,9 @@ export function loadConfig(): AppConfig {
     anthropicApiKey: process.env["ANTHROPIC_API_KEY"],
     openaiApiKey: process.env["OPENAI_API_KEY"],
     deepgramApiKey: process.env["DEEPGRAM_API_KEY"],
+    whisperApiKey: process.env["WHISPER_API_KEY"],
+    whisperApiUrl: process.env["WHISPER_API_URL"],
+    whisperModel: process.env["WHISPER_MODEL"],
   };
 }
 

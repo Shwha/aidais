@@ -6,14 +6,14 @@
   "permissions": [
     "activeTab",
     "tabCapture",
-    "offscreen"
+    "offscreen",
+    "scripting"
   ],
   "host_permissions": [
     "https://www.youtube.com/*",
     "https://youtube.com/*"
   ],
   "action": {
-    "default_popup": "popup/popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
@@ -21,14 +21,12 @@
     }
   },
   "background": {
-    "service_worker": "background.js",
-    "type": "module"
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
       "matches": ["https://www.youtube.com/*", "https://youtube.com/*"],
-      "js": ["content.js"],
-      "css": ["sidebar/sidebar.css"]
+      "js": ["content.js"]
     }
   ],
   "icons": {

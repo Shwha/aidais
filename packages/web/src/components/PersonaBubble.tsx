@@ -1,14 +1,20 @@
 import type { PersonaId, AgentMessage } from "@aidais/shared";
-import { PERSONAS } from "@aidais/shared";
+import { PERSONAS, FRED_NORRIS_PERSONA } from "@aidais/shared";
 import { useSessionStore } from "../stores/session.store";
 import { SineWave } from "./SineWave";
 
 interface PersonaBubbleProps {
   personaId: PersonaId;
+  onToggleChaosMode?: () => void;
 }
 
-export function PersonaBubble({ personaId }: PersonaBubbleProps) {
-  const persona = PERSONAS.find((p) => p.id === personaId);
+export function PersonaBubble({ personaId, onToggleChaosMode }: PersonaBubbleProps) {
+  const chaosMode = useSessionStore((s) => s.chaosMode);
+  const basePersona = PERSONAS.find((p) => p.id === personaId);
+  const persona =
+    personaId === "chaos-agent" && chaosMode === "fred-norris"
+      ? FRED_NORRIS_PERSONA
+      : basePersona;
   const messages = useSessionStore((s) => s.agentMessages[personaId]);
   const streaming = useSessionStore((s) => s.streamingMessages[personaId]);
 
@@ -43,6 +49,15 @@ export function PersonaBubble({ personaId }: PersonaBubbleProps) {
           </div>
           <div className="text-xs text-gray-400">{persona.displayName}</div>
         </div>
+        {personaId === "chaos-agent" && onToggleChaosMode && (
+          <button
+            onClick={onToggleChaosMode}
+            className="rounded-md border border-gray-600 px-2 py-0.5 text-[10px] text-gray-400 transition-colors hover:border-purple-500 hover:text-purple-400"
+            title={`Switch to ${chaosMode === "chaos" ? "Sound Effects" : "Chaos Agent"} mode`}
+          >
+            {chaosMode === "chaos" ? "Fred" : "Chaos"}
+          </button>
+        )}
         {isActive && (
           <div className="h-2 w-2 rounded-full animate-pulse" style={{ backgroundColor: persona.color }} />
         )}

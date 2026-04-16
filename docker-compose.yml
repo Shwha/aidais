@@ -2,7 +2,7 @@ services:
   aidais:
     build: .
     ports:
-      - "3001:3001"
+      - "3002:3002"
       - "5173:5173"
     env_file:
       - .env
@@ -11,7 +11,7 @@ services:
       - CORS_ORIGIN=http://localhost:5173
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://localhost:3001/health').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3002/health').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
       interval: 30s
       timeout: 5s
       retries: 3

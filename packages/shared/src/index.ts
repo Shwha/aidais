@@ -3,6 +3,8 @@ export type {
   AgentMessage,
   PersonaId,
   Persona,
+  PersonaAlt,
+  ChaosAgentMode,
   SessionConfig,
   ClientMessage,
   ServerMessage,
@@ -16,7 +18,7 @@ export type {
   LLMProviderConfig,
 } from "./provider-types.js";
 
-export { PERSONAS, getPersona, getActivePersonas } from "./personas.js";
+export { PERSONAS, FRED_NORRIS_PERSONA, getPersona, getChaosPersona, getActivePersonas } from "./personas.js";
 
 export {
   TRANSCRIPT_CONTEXT_MAX_CHARS,

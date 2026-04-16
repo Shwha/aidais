@@ -1,6 +1,24 @@
 import type { MiddlewareHandler } from "hono";
 
-type LogLevel = "info" | "warn" | "error" | "debug";
+type LogLevel = "info" | "warn" | "error" | "debug" | "verbose";
+
+const LEVEL_PRIORITY: Record<LogLevel, number> = {
+  verbose: 0,
+  debug: 1,
+  info: 2,
+  warn: 3,
+  error: 4,
+};
+
+function getLogLevel(): LogLevel {
+  const env = process.env["LOG_LEVEL"]?.toLowerCase();
+  if (env && env in LEVEL_PRIORITY) return env as LogLevel;
+  return process.env["NODE_ENV"] === "development" ? "debug" : "info";
+}
+
+function shouldLog(level: LogLevel): boolean {
+  return LEVEL_PRIORITY[level] >= LEVEL_PRIORITY[getLogLevel()];
+}
 
 interface LogEntry {
   timestamp: string;
@@ -14,12 +32,26 @@ function formatLog(entry: LogEntry): string {
 }
 
 export const logger = {
+  verbose(message: string, data?: Record<string, unknown>) {
+    if (!shouldLog("verbose")) return;
+    console.log(
+      formatLog({ timestamp: new Date().toISOString(), level: "verbose", message, ...data })
+    );
+  },
+  debug(message: string, data?: Record<string, unknown>) {
+    if (!shouldLog("debug")) return;
+    console.debug(
+      formatLog({ timestamp: new Date().toISOString(), level: "debug", message, ...data })
+    );
+  },
   info(message: string, data?: Record<string, unknown>) {
+    if (!shouldLog("info")) return;
     console.log(
       formatLog({ timestamp: new Date().toISOString(), level: "info", message, ...data })
     );
   },
   warn(message: string, data?: Record<string, unknown>) {
+    if (!shouldLog("warn")) return;
     console.warn(
       formatLog({ timestamp: new Date().toISOString(), level: "warn", message, ...data })
     );
@@ -28,13 +60,6 @@ export const logger = {
     console.error(
       formatLog({ timestamp: new Date().toISOString(), level: "error", message, ...data })
     );
-  },
-  debug(message: string, data?: Record<string, unknown>) {
-    if (process.env["NODE_ENV"] === "development") {
-      console.debug(
-        formatLog({ timestamp: new Date().toISOString(), level: "debug", message, ...data })
-      );
-    }
   },
 };
 

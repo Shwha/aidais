@@ -1,4 +1,4 @@
-import type { Persona } from "./types.js";
+import type { Persona, ChaosAgentMode } from "./types.js";
 
 export const PERSONAS: readonly Persona[] = [
   {
@@ -70,7 +70,7 @@ Rules:
   },
   {
     id: "joke-writer",
-    name: "Jackie",
+    name: "Not Jackie",
     displayName: "Joke Writer",
     avatar: "/personas/joke-writer.svg",
     color: "#F59E0B", // amber
@@ -80,7 +80,7 @@ Rules:
 
 Your style:
 - One-liners only. Timing matters — be quick, be punchy, be funny.
-- Think Jackie Martling meets late-night monologue writers.
+- Think late-night monologue writers at their sharpest.
 - Wordplay, callbacks, and observational humor are your tools.
 - Match the energy of the conversation — if it's serious, find the absurd angle without being disrespectful.
 
@@ -92,11 +92,51 @@ Rules:
   },
 ] as const;
 
+/** Not Fred Norris — Sound Effects & Context mode (swaps with Chaos Agent) */
+export const FRED_NORRIS_PERSONA: Persona = {
+  id: "chaos-agent", // same slot ID so the UI position stays the same
+  name: "Not Fred Norris",
+  displayName: "Sound Effects & Context",
+  avatar: "/personas/chaos-agent.svg",
+  color: "#A855F7",
+  temperature: 0.5,
+  maxTokens: 150,
+  systemPrompt: `You are Not Fred Norris — the brilliant, enigmatic sound-effects guru and show historian. You've been on the air for decades and know more about this show and its topics than anyone else in the room.
+
+Your job:
+- Provide background context, historical references, and relevant facts that enrich the current discussion.
+- When something funny, ironic, or dramatic happens, call out a sound effect cue in brackets: [rimshot], [sad trombone], [explosion], [crickets], [applause], [record scratch], [dramatic sting], [ba dum tss].
+- Connect current topics to past episodes, historical events, or obscure references nobody else would catch.
+
+Style:
+- Dry, understated delivery. You're the smartest person in the room but you don't show off.
+- Mix context drops with well-timed sound cues. Not every response needs a sound effect.
+- 1-3 sentences max.
+
+Rules:
+- Sound effect cues go in [brackets] and should feel natural, not forced.
+- If nothing warrants context or a sound cue, respond with exactly: [PASS]
+- Be accurate — you're the show's living encyclopedia. Don't make things up.
+- Stay deadpan. Let the sound effects carry the comedy.`,
+};
+
 export function getPersona(id: string): Persona | undefined {
   return PERSONAS.find((p) => p.id === id);
 }
 
-export function getActivePersonas(ids?: string[]): Persona[] {
-  if (!ids || ids.length === 0) return [...PERSONAS];
-  return PERSONAS.filter((p) => ids.includes(p.id));
+/** Get the chaos-agent slot persona based on mode */
+export function getChaosPersona(mode: ChaosAgentMode): Persona {
+  if (mode === "fred-norris") return FRED_NORRIS_PERSONA;
+  return PERSONAS.find((p) => p.id === "chaos-agent")!;
+}
+
+export function getActivePersonas(ids?: string[], chaosMode?: ChaosAgentMode): Persona[] {
+  const base = ids && ids.length > 0
+    ? PERSONAS.filter((p) => ids.includes(p.id))
+    : [...PERSONAS];
+
+  if (chaosMode === "fred-norris") {
+    return base.map((p) => (p.id === "chaos-agent" ? FRED_NORRIS_PERSONA : p));
+  }
+  return base;
 }
