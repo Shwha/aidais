@@ -12,11 +12,12 @@
   },
   "dependencies": {
     "@aidais/shared": "workspace:*",
-    "@hono/node-ws": "^1.1.0",
-    "hono": "^4.7.0",
-    "@hono/node-server": "^1.14.0",
-    "openai": "^4.85.0",
     "@anthropic-ai/sdk": "^0.39.0",
+    "@hono/node-server": "^1.14.0",
+    "@hono/node-ws": "^1.1.0",
+    "dotenv": "^17.4.2",
+    "hono": "^4.7.0",
+    "openai": "^4.85.0",
     "zod": "^3.24.0"
   },
   "devDependencies": {

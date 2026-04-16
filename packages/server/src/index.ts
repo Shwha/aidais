@@ -1,3 +1,9 @@
+import { config as loadDotenv } from "dotenv";
+import { resolve } from "node:path";
+
+// Load .env from project root
+loadDotenv({ path: resolve(import.meta.dirname, "../../../.env") });
+
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
 import { createNodeWebSocket } from "@hono/node-ws";
